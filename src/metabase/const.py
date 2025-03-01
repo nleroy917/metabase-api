@@ -1,0 +1,1 @@
+DEFAULT_METABASE_HOST="http://localhost:3000"
