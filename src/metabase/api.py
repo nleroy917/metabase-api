@@ -1,6 +1,7 @@
 from requests import Session, Response
 
-from .const import DEFAULT_METABASE_HOST
+from metabase.const import DEFAULT_METABASE_HOST
+from metabase.exceptions import MissingParameterException
 
 class Metabase:
     def __init__(self, host_url: str = None, api_key: str = None, kwargs: dict = None):
@@ -44,7 +45,7 @@ class Metabase:
         :param path: The path to send the request to.
         """
         return self.session.get(
-            f"{self.host_url}/{path}"
+            f"{self.host_url}{path}"
         )
     
     def _post(self, path: str, data: dict) -> Response:
@@ -55,7 +56,7 @@ class Metabase:
         :param data: The data to send.
         """
         return self.session.post(
-            f"{self.host_url}/{path}",
+            f"{self.host_url}{path}",
             json=data
         )
     
@@ -66,7 +67,7 @@ class Metabase:
         :param path: The path to send the request to.
         """
         return self.session.delete(
-            f"{self.host_url}/{path}"
+            f"{self.host_url}{path}"
         )
     
     def _put(self, path: str, data: dict) -> Response:
@@ -77,7 +78,7 @@ class Metabase:
         :param data: The data to send.
         """
         return self.session.put(
-            f"{self.host_url}/{path}",
+            f"{self.host_url}{path}",
             json=data
         )
     
@@ -89,6 +90,36 @@ class Metabase:
         :param data: The data to send.
         """
         return self.session.patch(
-            f"{self.host_url}/{path}",
+            f"{self.host_url}{path}",
             json=data
         )
+    
+    def get_user(self, user_id: int) -> Response:
+        """
+        Get a user by ID.
+
+        :param user_id: The ID of the user.
+        """
+        return self._get(f"/api/user/{user_id}")
+    
+    def create_new_user(self, email: str = None, first_name: str = None, last_name: str = None, login_attributes: dict = None, user_group_memberships: list[dict] = None) -> Response:
+        """
+        Create a new user in Metabase.
+
+        :param email: The email of the new user.
+        :param first_name: The first name of the new user.
+        :param last_name: The last name of the new user.
+        :param login_attributes: Additional login attributes for the new user.
+        :param user_group_memberships: List of user group memberships.
+        """
+        if email is None:
+            raise MissingParameterException("email")
+        data = {
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+            "login_attributes": login_attributes,
+            "user_group_memberships": user_group_memberships
+        }
+        return self._post("/api/user", data)
+    
