@@ -4,7 +4,7 @@ from metabase.const import DEFAULT_METABASE_HOST
 from metabase.exceptions import MissingParameterException
 
 class Metabase:
-    def __init__(self, host_url: str = None, api_key: str = None, kwargs: dict = None):
+    def __init__(self, host_url: str = None, api_key: str = None, kwargs: dict = dict()):
         """
         Initialize the Metabase API client.
 

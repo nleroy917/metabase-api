@@ -1,3 +1,3 @@
-from .api import MetabaseAPI
+from .api import Metabase
 
-__all__ = [MetabaseAPI]
+__all__ = [Metabase]
