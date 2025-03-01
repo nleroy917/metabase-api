@@ -8,6 +8,11 @@ class Metabase:
         """
         Initialize the Metabase API client.
 
+
+        :param host_url: The URL of the Metabase instance.
+        :param api_key: The API key
+        :param kwargs: Additional options
+
         ```python
         from metabase import MetabaseAPI
 
@@ -24,10 +29,6 @@ class Metabase:
             }
         )
         ```
-
-        :param host_url: The URL of the Metabase instance.
-        :param api_key: The API key
-        :param kwargs: Additional options
         """
         self.host_url = host_url or DEFAULT_METABASE_HOST
         self.api_key = api_key
