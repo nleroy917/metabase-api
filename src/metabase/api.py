@@ -124,3 +124,11 @@ class Metabase:
         }
         return self._post("/api/user", data)
     
+    def sync_database_schema(self, database_id: int) -> Response:
+        """
+        Trigger a manual update of the schema metadata for this database.
+
+        :param database_id: The ID of the database.
+        """
+        return self._post(f"/api/database/{database_id}/sync_schema", {})
+    
