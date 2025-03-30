@@ -3,6 +3,8 @@ from requests import Session, Response
 from metabase.const import DEFAULT_METABASE_HOST
 from metabase.exceptions import MissingParameterException
 
+from .models import UsageStats
+
 class Metabase:
     def __init__(self, host_url: str = None, api_key: str = None, kwargs: dict = dict()):
         """
@@ -136,7 +138,9 @@ class Metabase:
         """
         Anonymous usage stats. Endpoint for testing, and eventually exposing this to instance admins to let them see what is being phoned home. 
         """
-        return self._get("/api/util/stats")
+        response = self._get("/api/util/stats")
+        response.raise_for_status()
+        return UsageStats(**response.json())
     
     def __repr__(self):
         """
