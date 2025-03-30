@@ -2,6 +2,14 @@ from typing import Optional, Dict, Any
 
 from pydantic import BaseModel
 
+class LogEntry(BaseModel):
+    timestamp: str
+    level: str
+    fqns: str
+    msg: str
+    exception: Optional[Any]
+    process_uuid: str
+
 
 class StatsExecution(BaseModel):
     executions: int

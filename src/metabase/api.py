@@ -1,9 +1,11 @@
+from typing import List
+
 from requests import Session, Response
 
 from metabase.const import DEFAULT_METABASE_HOST
 from metabase.exceptions import MissingParameterException
 
-from .models import UsageStats
+from .models import UsageStats, LogEntry
 
 class Metabase:
     def __init__(self, host_url: str = None, api_key: str = None, kwargs: dict = dict()):
@@ -47,9 +49,11 @@ class Metabase:
 
         :param path: The path to send the request to.
         """
-        return self.session.get(
+        res =  self.session.get(
             f"{self.host_url}{path}"
         )
+        res.raise_for_status()
+        return res
     
     def _post(self, path: str, data: dict) -> Response:
         """
@@ -58,10 +62,12 @@ class Metabase:
         :param path: The path to send the request to.
         :param data: The data to send.
         """
-        return self.session.post(
+        res = self.session.post(
             f"{self.host_url}{path}",
             json=data
         )
+        res.raise_for_status()
+        return res
     
     def _delete(self, path: str) -> Response:
         """
@@ -69,9 +75,11 @@ class Metabase:
 
         :param path: The path to send the request to.
         """
-        return self.session.delete(
+        res = self.session.delete(
             f"{self.host_url}{path}"
         )
+        res.raise_for_status()
+        return res
     
     def _put(self, path: str, data: dict) -> Response:
         """
@@ -80,10 +88,12 @@ class Metabase:
         :param path: The path to send the request to.
         :param data: The data to send.
         """
-        return self.session.put(
+        res = self.session.put(
             f"{self.host_url}{path}",
             json=data
         )
+        res.raise_for_status()
+        return res
     
     def _patch(self, path: str, data: dict) -> Response:
         """
@@ -92,10 +102,12 @@ class Metabase:
         :param path: The path to send the request to.
         :param data: The data to send.
         """
-        return self.session.patch(
+        res = self.session.patch(
             f"{self.host_url}{path}",
             json=data
         )
+        res.raise_for_status()
+        return res
     
     def get_user(self, user_id: int) -> Response:
         """
@@ -134,13 +146,24 @@ class Metabase:
         """
         return self._post(f"/api/database/{database_id}/sync_schema", {})
     
-    def stats(self) -> Response:
+    def get_stats(self) -> UsageStats:
         """
         Anonymous usage stats. Endpoint for testing, and eventually exposing this to instance admins to let them see what is being phoned home. 
         """
         response = self._get("/api/util/stats")
         response.raise_for_status()
         return UsageStats(**response.json())
+    
+    def get_logs(self) -> List[LogEntry]:
+        """
+        Get the logs from the Metabase instance. This is useful for debugging and monitoring.
+
+        :return: A list of log entries.
+        """
+        response = self._get("/api/util/logs")
+        response.raise_for_status()
+        # Assuming the logs are returned as a list of log entries in JSON format
+        return response.json()
     
     def __repr__(self):
         """
