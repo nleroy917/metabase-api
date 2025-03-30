@@ -132,3 +132,18 @@ class Metabase:
         """
         return self._post(f"/api/database/{database_id}/sync_schema", {})
     
+    def __repr__(self):
+        """
+        Return a string representation of the Metabase API client.
+
+        :return: A string representation of the Metabase API client.
+        """
+        return f"Metabase(host_url={self.host_url}, api_key={self.api_key[0:5]}*****)"
+    
+    def __str__(self):
+        """
+        Return a string representation of the Metabase API client.
+
+        :return: A string representation of the Metabase API client.
+        """
+        return f"Metabase API Client (host_url={self.host_url})"
