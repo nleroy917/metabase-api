@@ -162,8 +162,11 @@ class Metabase:
         """
         response = self._get("/api/util/logs")
         response.raise_for_status()
-        # Assuming the logs are returned as a list of log entries in JSON format
-        return response.json()
+        logs_data = response.json()
+        return [
+            LogEntry(**log_entry) 
+            for log_entry in logs_data
+        ]
     
     def __repr__(self):
         """
