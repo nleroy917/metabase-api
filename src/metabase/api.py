@@ -132,6 +132,12 @@ class Metabase:
         """
         return self._post(f"/api/database/{database_id}/sync_schema", {})
     
+    def stats(self) -> Response:
+        """
+        Anonymous usage stats. Endpoint for testing, and eventually exposing this to instance admins to let them see what is being phoned home. 
+        """
+        return self._get("/api/util/stats")
+    
     def __repr__(self):
         """
         Return a string representation of the Metabase API client.
