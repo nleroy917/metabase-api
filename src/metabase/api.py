@@ -4,8 +4,7 @@ from requests import Session, Response
 
 from metabase.const import DEFAULT_METABASE_HOST
 from metabase.exceptions import MissingParameterException
-
-from .models import UsageStats, LogEntry
+from .models import UsageStats, LogEntry, TableMetaData, MetricCard
 
 class Metabase:
     def __init__(self, host_url: str = None, api_key: str = None, kwargs: dict = dict()):
@@ -167,6 +166,28 @@ class Metabase:
             LogEntry(**log_entry) 
             for log_entry in logs_data
         ]
+    
+    def get_table_schema(self, table_id: int) -> TableMetaData:
+        """
+        Get the logs from the Metabase instance. This is useful for debugging and monitoring.
+
+        :return: A list of log entries.
+        """
+        response = self._get(f"/api/table/{table_id}/query_metadata")
+        response.raise_for_status()
+        table_data = response.json()
+        return TableMetaData(**table_data)
+
+    def post_metric_card(self, metric: MetricCard) -> Response:
+        """
+        Create a new metric card in Metabase.
+
+        :param metric: The metric card to create.
+        """
+        response = self._post("/api/card", metric.model_dump_json())
+        response.raise_for_status()
+        res = response.json()
+        return res
     
     def __repr__(self):
         """
